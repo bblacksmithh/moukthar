@@ -17,9 +17,9 @@ import java.util.Enumeration;
  */
 public class Utils {
 
-    private static final String C2_SERVER = "http://";
+    private static final String C2_SERVER = "http://localhost";
 
-    public static final String WEB_SOCKET_SERVER = "ws://";
+    public static final String WEB_SOCKET_SERVER = "ws://localhost:8080";
 
     private static SharedPreferences preferences;
 

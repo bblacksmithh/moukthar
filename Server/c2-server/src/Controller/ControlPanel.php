@@ -22,7 +22,7 @@ use function Server\Library\render;
 class ControlPanel extends Base
 {
     /** @var string $webSocketURI Web Socket URI */
-    private string $webSocketURI = "ws://localhost:8080";
+    private string $webSocketURI;
 
     /** @var int $resultsPerPage Number of items to show in a page */
     private int $resultsPerPage = 20; 
@@ -30,6 +30,7 @@ class ControlPanel extends Base
     public function __construct()
     {
         parent::__construct();
+        $this->webSocketURI = getenv('WEBSOCKET_URI') ?: 'ws://localhost:8080';
     }
 
     /**
@@ -43,7 +44,7 @@ class ControlPanel extends Base
         }
 
         $clients = $this->getClients();
-        render('home.php', ['clients' => $clients]);
+        render('home.php', ['clients' => $clients, 'webSocketURI' => $this->webSocketURI]);
     }
 
     /**
@@ -154,6 +155,7 @@ class ControlPanel extends Base
             [
                 'webSocketID' => $webSocketID,
                 'device' => $device,
+                'webSocketURI' => $this->webSocketURI,
             ]
         );
     }

@@ -1,0 +1,69 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: moukthar-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: cc
+      MYSQL_USER: android
+      MYSQL_PASSWORD: android
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./database.sql:/docker-entrypoint-initdb.d/database.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  php-apache:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: moukthar-web
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      DB_HOST: mysql
+      DB_NAME: cc
+      DB_USER: android
+      DB_PASSWORD: android
+      WEBSOCKET_URI: 'ws://localhost:8080'
+    ports:
+      - "80:80"
+    volumes:
+      - ./c2-server:/var/www/html/c2-server
+      - ./web-socket:/var/www/html/web-socket
+    networks:
+      - moukthar-network
+
+  websocket:
+    build:
+      context: .
+      dockerfile: Dockerfile.websocket
+    container_name: moukthar-websocket
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      DB_HOST: mysql
+      DB_NAME: cc
+      DB_USER: android
+      DB_PASSWORD: android
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./web-socket:/var/www/html/web-socket
+    networks:
+      - moukthar-network
+
+volumes:
+  mysql-data:
+
+networks:
+  moukthar-network:
+    driver: bridge
