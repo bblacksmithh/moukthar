@@ -8,7 +8,6 @@ RUN apt-get update && apt-get install -y \
     libpq-dev \
     && docker-php-ext-install pdo pdo_mysql \
     && a2enmod rewrite \
-    && a2enmod php8.2 \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Composer
