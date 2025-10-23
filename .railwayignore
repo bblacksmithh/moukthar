@@ -1,0 +1,7 @@
+Client/
+.github/
+screenshots/
+LICENSE.txt
+README.md
+.gitignore
+*.md
